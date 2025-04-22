@@ -102,6 +102,8 @@ export const Cleanup = (props) => {
     useEffect(()=>{
         console.log(`▶ 이펙트 실행 : ${value}`);
 
+        //cleanUP 함수
+        //사이드 이펙트 함수의 return에 들어있는 함수
         return () =>{
             console.log(`■ 정리(cleanup) : ${value}`);
         }
@@ -110,7 +112,7 @@ export const Cleanup = (props) => {
     return(
         <div>
             <p>현재 value : {value}</p>
-            <button onClick={()=>setValue(v => v+1)}>버튼</button>
+            <button onClick={()=>setValue(v => v+1)}>value 증가 ({value})</button>
         </div>
     )
 }

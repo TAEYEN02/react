@@ -1,9 +1,9 @@
 import './App.css';
 import Sol1 from './exam/Exam';
 import { useState } from 'react';
-import TimerFunction, { UserList,Cleanup } from './hook/UseEffectEx';
+import TimerFunction, { UserList,Cleanup} from './hook/UseEffectEx';
 import Count from './exam/UseEffect_State';
-import {Counter,InputFocus,InputSample} from './hook/UseRef'
+import {Counter,InputFocus,InputSample,PreviosValue} from './hook/UseRef'
 
 function App() {
   const [input, setInput] = useState([])
@@ -31,7 +31,8 @@ function App() {
       {/* <Counter/> */}
       {/* <InputFocus/> */}
       {/* <InputSample /> */}
-      <Cleanup value={0} />
+      {/* <Cleanup value={0} /> */}
+      <PreviosValue />
     </div>
   );
 }

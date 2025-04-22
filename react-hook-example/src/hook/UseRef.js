@@ -102,3 +102,28 @@ export const InputSample = () => {
         </div>
     )
 }
+
+//숫자를 증가시키면서 이전값과 현재값을 화면에 표시하는 예제
+const usePrevios = (value) =>{
+    const prevRef = useRef();
+    useEffect(()=>{
+        prevRef.current = value;
+        //최신 value저장
+    },[value])
+    return prevRef.current;
+}
+
+export const PreviosValue = () => {
+    const [count, setCount] = useState(0);
+    const prevCount = usePrevios(count); //이전값을 저장
+
+    return(
+        <div>
+            <p>현재 값 : {count}</p>
+            <p>이전 값 : {prevCount !== undefined ? prevCount : "없음"}</p>
+            <button onClick={()=>{setCount((v => v+1))}}>증가({count})</button>
+        </div>
+    )
+}
+
+
