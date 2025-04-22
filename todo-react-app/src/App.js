@@ -4,9 +4,6 @@ import Todo from './Todo';
 import {List,Paper} from '@mui/material'
 import AddTodo from './AddTodo';
 import {Container} from '@mui/material';
-import newStyled from '@emotion/styled';
-import { CheckBox } from '@mui/icons-material';
-import { click } from '@testing-library/user-event/dist/click';
 
 //Container 
 //레이아웃의 가로 폭을 제한하고, 중앙 정렬 및 기본 패딩을 자동으로 적용해주는 컴포넌트
@@ -33,6 +30,24 @@ function App() {
 
   }
 
+
+
+
+  //삭제를 해주는 deleteItem()함수 만들기
+  //delete from 테이블 where id=0;
+  const deleteItem =(item) =>{
+    //배열에서 삭제하려는 아이템 찾기
+    //filter => 참이되는것만 남겨두는거
+    const newItems = items.filter(e => e.id !== item.id)
+    //삭제할 아이템을 제외한 아이템을 다시 배열에 지정한다.
+    setItems([...newItems])
+  }
+
+  const editItem = () => {
+    setItems([...items]);// -> 렌더링
+  }
+
+
 //react는 key 속성에 들어있는 값을 참조해서 리스트의 요소가 변경될 경우 
 //어떤 요소가 변경되었는지 빠르게 파악할 수 있다.
 const todoItems = items.length > 0 && 
@@ -45,7 +60,7 @@ const todoItems = items.length > 0 &&
 <Paper style={{margin: 16}}>
   <List> {/*일련의 학목을 세로로 나열하는 컨테이나 역할 */}
     {items.map((item) => (
-      <Todo item={item} key={item.id} />
+      <Todo item={item} key={item.id} deleteItem={deleteItem} editItem={editItem}/>
     ))}
   </List>
 </Paper>

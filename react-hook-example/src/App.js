@@ -1,12 +1,13 @@
-import logo from './logo.svg';
 import './App.css';
-import Counter from './hook/UseStateEx';
-import ShowHide from './exam/Exam';
 import Sol1 from './exam/Exam';
 import { useState } from 'react';
+import TimerFunction, { UserList,Cleanup } from './hook/UseEffectEx';
+import Count from './exam/UseEffect_State';
+import {Counter,InputFocus,InputSample} from './hook/UseRef'
 
 function App() {
   const [input, setInput] = useState([])
+  
 
   const add = (text) => {
     const newText ={
@@ -16,15 +17,21 @@ function App() {
 
     setInput(prev => [...prev, newText])
   }
+
+
  
 
 
   return (
     <div className="App">
-      {/* <Counter count={0}/>
-      <ShowHide/ > */}
-
-      <Sol1 add={add}/>
+      {/* <Sol1 add={add}/> */}
+      {/* <TimerFunction /> */}
+      {/* <UserList /> */}
+      {/* <Count /> */}
+      {/* <Counter/> */}
+      {/* <InputFocus/> */}
+      {/* <InputSample /> */}
+      <Cleanup value={0} />
     </div>
   );
 }

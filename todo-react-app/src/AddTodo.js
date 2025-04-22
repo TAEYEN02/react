@@ -32,6 +32,8 @@ import { Button,Grid,TextField } from '@mui/material'
 
 //props로 넘어온 내용을 받아서 사용할 준비가 끝남
 const AddTodo = ({add}) =>{
+   
+
 
     const [item,setItem] =useState({title:""})
 

@@ -2,13 +2,72 @@ import {useState} from 'react'
 import {ListItem, 
         ListItemText, 
         InputBase, 
-        Checkbox} from '@mui/material'
+        Checkbox,
+        ListItemSecondaryAction,
+        IconButton} from '@mui/material'
+import { DeleteOutlined } from '@mui/icons-material';
+//ListItemSecondaryAction
+//ListItem 내부에서 텍스트나 아이콘 이후에 보조 액션 영역을 오른쪽끝에 고정배치해준다
+//반드시 ListItem의 자식으로만 사용해야한다
+//현재 파일에서는 checkBox와 label 컴포넌트를 만들어보자
+
+//IconButton
+//아이콘을 클릭 가능한 버튼으로 만들어주는 컴포넌트이다
+
+//DeleteOutlined
+//MUI아이콘 라이브러리에 포함된 휴지통 아이콘 컴포넌트이다
 
 //현재 파일에서는 checkBox와 label 컴포넌트를 만들어보자
 
+
 let Todo = (props) => {
 
+    const editItem = props.editItem;
+
+    //App.js에서 받은 한가지 할 일 목록
     const [item, setItem] = useState(props.item);
+    const [readOnly, setReadOnly] = useState(true);
+
+    //true를 false로 바꾸는 turnOffReadOnly함수 추가
+    const turnOffReadOnly = () => {
+
+            setReadOnly(false); 
+    }
+    
+    // //변경을 감지하는 함수
+    // const handleChange = (e) => {
+    //     setItem({
+    //         ...item,
+    //         title:e.target.value    
+    //     })
+    // }
+
+    const editEventHandler = (e) => {
+        item.title = e.target.value
+        editItem();
+    }
+
+    //체크박스 변경함수
+    const checkBokEventHandler = (e) => {
+        item.done = e.target.checked;
+        editItem();
+    }
+
+
+    const turnOnReadOnly = (e) =>{
+        if(e.key=='Enter'){
+            setReadOnly(true)
+        }
+    }
+
+
+     //삭제 함수
+     const deleteItem = props.deleteItem;
+
+     const deleteEventHandler = () => {
+        deleteItem(item);
+     }
+
     return(
 
         //html코드가 들어가는 부분
@@ -16,56 +75,29 @@ let Todo = (props) => {
         //onclick -> onClick
         //class -> className
         <ListItem>
-            <Checkbox checked={item.done}/>
+            <Checkbox checked={item.done} onChange={checkBokEventHandler}/>
             <ListItemText>
                 <InputBase
-                    inputProps={{"aria-label" : "naked"}}
+                    inputProps={{"aria-label" : "naked", "readOnly" : readOnly}}
+                    onClick={turnOffReadOnly}
+                    onChange={editEventHandler}
                     type="text"
                     id={item.id}
                     name={item.id}
                     value={item.title}
                     multiline={true}
                     fullWidth={true}
+                    onKeyDown={turnOnReadOnly}
                 />
             </ListItemText>
+            <ListItemSecondaryAction>
+                <IconButton aria-level='Delete Todo' onClick={deleteEventHandler}>
+                    <DeleteOutlined />
+                </IconButton>
+            </ListItemSecondaryAction>
         </ListItem>
     )
 }
-
-
-    // const TodoList = (item)=>{
-    //     //html 코드가 들어가는 부분
-    //     //return하는 요소는 하나이기 때문에 div로 묶기
-    //     //속성을 쓸때 카멜케이스로 작성하기
-    //     //onClick ClassName
-    //     return (
-    //         <div className="Todo">
-    //         <input
-    //             type="checkbox"
-    //             id={item.id}
-    //             name={item.id}
-    //             checked={item.done} />
-                
-    //         <label for={item.id}>{item.title}</label> 
-      
-    //         {/*label태그는 for 속성에 name값으로 연결해서 어떤 요소와 연결될지 지정*/}       
-    //     </div>
-    //     )
-       
-    // }
-
-
-    // // let list = []
-    // // props.item.forEach((item)=>{
-    // //     list.push(TodoList.item)
-    // // })
-
-    // //forEach는 안되는걸로, map으로 콜백함수로 변환해서 새 배열 반환
-
-
-    // return(
-    //     props.item.map(TodoList)
-    // )
 
 
 export default Todo;
