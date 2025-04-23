@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { Home, About, PostDetail, UserProfile, Dashboard, Overview,Settings } from '../Pages.js';
+import { Home, About, PostDetail, UserProfile, Dashboard, Overview, Settings } from '../Pages.js';
 
 export const Routing = () => {
     return (
@@ -18,6 +18,7 @@ export const Routing = () => {
                 {/* /dashboard 이하의 모든 경로를 이 라우트가 잡아낸다 */}
                 {/* /dasdhboard/overview, /dashboard/settings 등*/}
                 <Route>
+
                     <Route path="/dashboard" element={<Dashboard />}>
                         <Route path="overview" element={<Overview />} />
                         <Route path="settings" element={<Settings />} />

@@ -2,7 +2,7 @@
 //Ex) /:lang/home 으로 언어코드를 받아서 해당하는 언어에 맞는 내용을 보여주기
 //ex) /eng/home, /kor/home, /jp/home
 
-import { useParams, Navigate,Link,Outlet } from "react-router-dom";
+import { useParams, Navigate, Link, Outlet } from "react-router-dom";
 
 
 
@@ -58,9 +58,11 @@ const Categorie = () => {
             <h2>카테고리</h2>
             <ul>
                 {categories.map(c => (
-                    <li key ={c.id}>
-                        <Link to ={`/categories/${c.id}`}>
-                        {c.name}</Link>
+                    // key에 고유한 값이 들어가는건 맞지만
+                    // li의 값이 변경될때 react가 구분을 하는 값으로 인식
+                    <li key={c.id}>
+                        <Link to={`/categories/${c.id}/${c.name}`}>
+                            {c.name}</Link>
                     </li>
                 ))}
 
@@ -72,7 +74,7 @@ const Categorie = () => {
 }
 
 const Product = () => {
-    const { categoryId } = useParams();
+    const { categoryId,catgoryName } = useParams();
 
     const products = [
         { id: 1, name: '노트북', categoryId: '1' },
@@ -86,27 +88,30 @@ const Product = () => {
     const filteredProducts = products.filter(p => p.categoryId === categoryId);
 
 
-        return (
-            <>
-                <ul>
-                    {filteredProducts.map(c => (
-                        <li key ={c.id}>
-                            <Link to ={`/categories/${c.categoryId}/products/${c.id}`}>
+    return (
+        <>
+            <h2>"{catgoryName}" 의 목록</h2>
+            <ul>
+                {filteredProducts.map(c => (
+                    //렌더링 할때 키를 참고해서 순서를 참고하기 위한 속성
+                    //index와 같은 역할
+                    <li key={c.id}>
+                        <Link to={`/categories/${c.categoryId}/products/${c.id}`}>
                             {c.name}</Link>
-                        </li>
-                    ))}
-    
-                </ul>
-            </>
-        )
-        
+                    </li>
+                ))}
+
+            </ul>
+        </>
+    )
+
 }
 
 
 
 const ProductDetail = () => {
-    const { productId,categoryId } = useParams();
-    
+    const { productId, categoryId,catgoryName } = useParams();
+
     const p_detail = [
         { id: 1, name: '노트북', description: '최신형 노트북입니다.', categoryId: '1' },
         { id: 2, name: '스마트폰', description: '최신 스마트폰입니다.', categoryId: '1' },
@@ -114,24 +119,28 @@ const ProductDetail = () => {
         { id: 4, name: '청바지', description: '편안한 청바지입니다.', categoryId: '2' },
         { id: 5, name: '사과', description: '신선한 사과입니다.', categoryId: '3' },
         { id: 6, name: '우유', description: '신선한 우유입니다.', categoryId: '3' }
-        ];
+    ];
 
-        const product = p_detail.find(p => p.id.toString() === productId && p.categoryId === categoryId);
+    const product = p_detail.find(p => p.id.toString() === productId && p.categoryId === categoryId);
+    if(!product){
+        alert("상품을 찾을 수 없습니다")
+        return <Navigate to="/categories"/>
+    }
 
 
- return (
-            <>
-                <ul>
-                  <li>상품명 : {product.name}</li>
-                  <li>상세 설명 : {product.description}</li>
-                </ul>
-            </>
-        )
+    return (
+        <>
+            <p>상품 ID : {product.id}</p>
+            <p>상품명 : {product.name}</p>
+            <p>상세 설명 : {product.description}</p>
+
+        </>
+    )
 
 }
 
 
 
-export { Home2, Categorie,Product,ProductDetail }
+export { Home2, Categorie, Product, ProductDetail }
 
 
