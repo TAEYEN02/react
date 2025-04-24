@@ -49,7 +49,7 @@ const Home2 = () => {
 
 const Categorie = () => {
     const categories = [
-        { id: 1, name: '전자제품' },
+        { id: 1, name: '전자제품' },  
         { id: 2, name: '의류' },
         { id: 3, name: '식료품' }
     ];
