@@ -5,6 +5,7 @@ import { Axois, Fetch } from './Async';
 import { FectchxEam } from './FectchxEam';
 import {UseList}from './UserList';
 import { Blog } from './Blog';
+import { PromiseDemo } from './Promise';
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
     <Axois/> */}
     {/* <FectchxEam/> */}
     {/* <UseList/> */}
-    <Blog/>
+    {/* <Blog/> */}
+    <PromiseDemo/>
     </div>
   );
 }
