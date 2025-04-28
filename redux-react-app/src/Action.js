@@ -1,7 +1,5 @@
 //액션(action) : state를 변경하는 이벤트
 
-import { type } from "@testing-library/user-event/dist/type"
-
 //'INCREMENT'라는 타입의 액션을 반환하는 함수
 export const increment = () => (
     {type:'INCREMENT'}
