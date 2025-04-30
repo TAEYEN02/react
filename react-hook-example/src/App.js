@@ -26,13 +26,13 @@ function App() {
     <div className="App">
       {/* <Sol1 add={add}/> */}
       {/* <TimerFunction /> */}
-      {/* <UserList /> */}
+      <UserList />
       {/* <Count /> */}
       {/* <Counter/> */}
       {/* <InputFocus/> */}
       {/* <InputSample /> */}
       {/* <Cleanup value={0} /> */}
-      <PreviosValue />
+      {/* <PreviosValue /> */}
     </div>
   );
 }
