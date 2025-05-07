@@ -1,10 +1,12 @@
-import {useState} from 'react'
-import {ListItem, 
-        ListItemText, 
-        InputBase, 
-        Checkbox,
-        ListItemSecondaryAction,
-        IconButton} from '@mui/material'
+import { useState } from 'react'
+import {
+    ListItem,
+    ListItemText,
+    InputBase,
+    Checkbox,
+    ListItemSecondaryAction,
+    IconButton
+} from '@mui/material'
 import { DeleteOutlined } from '@mui/icons-material';
 //ListItemSecondaryAction
 //ListItem 내부에서 텍스트나 아이콘 이후에 보조 액션 영역을 오른쪽끝에 고정배치해준다
@@ -31,9 +33,9 @@ let Todo = (props) => {
     //true를 false로 바꾸는 turnOffReadOnly함수 추가
     const turnOffReadOnly = () => {
 
-            setReadOnly(false); 
+        setReadOnly(false);
     }
-    
+
     // //변경을 감지하는 함수
     // const handleChange = (e) => {
     //     setItem({
@@ -43,42 +45,43 @@ let Todo = (props) => {
     // }
 
     const editEventHandler = (e) => {
-        item.title = e.target.value
-        editItem();
+        setItem({ ...item, title: e.target.value });//변경만 해서는 렌더링이 안된다.
     }
+
 
     //체크박스 변경함수
     const checkBokEventHandler = (e) => {
         item.done = e.target.checked;
-        editItem();
+        editItem(item);//App.js의 editItem의 매개변수에 전달된다.
     }
 
-
-    const turnOnReadOnly = (e) =>{
-        if(e.key=='Enter'){
-            setReadOnly(true)
+ 
+    const turnOnReadOnly = (e) => {
+        if (e.key === 'Enter' && readOnly === false) {
+            setReadOnly(true);
+            editItem(item);
         }
     }
 
 
-     //삭제 함수
-     const deleteItem = props.deleteItem;
+    //삭제 함수
+    const deleteItem = props.deleteItem;
 
-     const deleteEventHandler = () => {
+    const deleteEventHandler = () => {
         deleteItem(item);
-     }
+    }
 
-    return(
+    return (
 
         //html코드가 들어가는 부분
         //속성을 쓸 때 카멜케이스로 작성하기
         //onclick -> onClick
         //class -> className
         <ListItem>
-            <Checkbox checked={item.done} onChange={checkBokEventHandler}/>
+            <Checkbox checked={item.done} onChange={checkBokEventHandler} />
             <ListItemText>
                 <InputBase
-                    inputProps={{"aria-label" : "naked", "readOnly" : readOnly}}
+                    inputProps={{ "aria-label": "naked", "readOnly": readOnly }}
                     onClick={turnOffReadOnly}
                     onChange={editEventHandler}
                     type="text"
