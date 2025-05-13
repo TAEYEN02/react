@@ -20,7 +20,8 @@ let backendHost;
 //그 값을 반환한다.
 const hostname = window && window.location && window.location.hostname;
 
-//http://localhost:10000/todo
+//http://loaclhost:10000
+//hostname -> localhost
 if(hostname == "localhost"){
     backendHost = "http://localhost:10000";
 }
