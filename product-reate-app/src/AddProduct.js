@@ -26,7 +26,7 @@ export const AddProduct = ({ add }) => {
     };
 
     return (
-        <div>
+        <div style={{margin:"10px"}}>
             <input
                 id="p_name"
                 type="text"

@@ -36,14 +36,20 @@
     transform: rotate(360deg);
   }
 }
-th , td{
-  border: solid 1px black;
-}
 
 div{
-  margin: auto;
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+    height: 50vh;
+    color:blue;
+    display : flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+};
+
+div h1{
+  color:black;
+}
+
+td{
+  border:10px;
 }

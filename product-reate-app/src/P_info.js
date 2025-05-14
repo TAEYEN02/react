@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react';
-import { call } from './service/ApiService'; 
-import { AddProduct } from './AddProduct';
+import React, { useState, useEffect } from 'react';
+import './css/styles.css';
+import { call } from './service/ApiService';
+import {AddProduct} from './AddProduct';
+import OrderInfo from './order_info';
+import './css/styles.css'
 
-export function P_info() {
-    const [products, setProducts] = useState([]); 
-    const [loading, setLoading] = useState(true); 
-    const [item, setItems]= useState([]);
-    const [form ,setForm] = useState(false);
-    const [selected, setSelected] = useState(null); 
+function P_info() {
+    const [items, setItems] = useState([]);
+    const [openForm, setOpenForm] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [orderCount, setOrderCount] = useState('');
+    const [showOrderInfo, setShowOrderInfo] = useState(false);
+    const [selected, setSelected] = useState(null);
     const [editForm, setEditForm] = useState({ p_name: '', p_price: '', p_count: '' });
 
     useEffect(() => {
@@ -15,31 +19,53 @@ export function P_info() {
     }, []);
 
     const loadProducts = () => {
-        call('/Products', 'GET')
-            .then((data) => {
-                setProducts(data.data || []); 
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error('Error fetching products:', error);
-                setLoading(false); 
-            });
+        call('/product', 'GET')
+            .then(result => setItems(result.data))
+            .catch(error => console.error('상품 불러오기 실패:', error));
     };
 
-    const add = (item) => {
-        call("/Products", "POST", item)
-            .then(() => {
-                setItems([]);
-                loadProducts(); // 목록 갱신
-            });
+    const addItem = (item) => {
+        call("/product", "POST", item).then(() => {
+            setOpenForm(false);
+            loadProducts();
+        });
     };
 
-    const handleRowClick = (product) => {
+    const handleRadioChange = (index) => {
+        setSelectedIndex(index);
+        setOrderCount('');
+    };
+
+    const handleOrderCountChange = (e) => {
+        setOrderCount(e.target.value);
+    };
+
+    const orderProduct = () => {
+        if (selectedIndex !== null && orderCount > 0 && items[selectedIndex]) {
+            const orderData = {
+                productId: items[selectedIndex].productId,
+                productCount: parseInt(orderCount)
+            };
+            call("/orders", "POST", orderData)
+                .then(() => {
+                    alert("주문이 완료되었습니다!");
+                    loadProducts();
+                });
+        } else {
+            alert("상품을 선택하고 주문 개수를 입력하세요.");
+        }
+    };
+
+    const showOrderDetails = () => {
+        setShowOrderInfo(!showOrderInfo);
+    };
+
+    const handleRowClick = (product, index) => {
         setSelected(product);
         setEditForm({
-            p_name: product.p_name,
-            p_price: product.p_price,
-            p_count: product.p_count
+            p_name: product.productName,
+            p_price: product.productPrice,
+            p_count: product.productStock
         });
     };
 
@@ -50,61 +76,88 @@ export function P_info() {
 
     const handleUpdate = () => {
         if (!selected) return;
-        call(`/Products/${selected.p_id}`, 'PUT', {
+        call(`/product/${selected.productId}`, 'PUT', {
             ...selected,
-            ...editForm
+            productName: editForm.p_name,
+            productPrice: editForm.p_price,
+            productStock: editForm.p_count
         }).then(() => {
             alert("수정 완료!");
             setSelected(null);
-            loadProducts(); // 목록 갱신
+            loadProducts();
         });
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
     return (
-        <div>
-            <h1>상품 목록</h1>
-           
-            <button onClick={() => setForm(!form)}>
-                {form ? "입력 폼 닫기" : "상품 추가"}
+        <div className="container">
+            <h1>상품 관리</h1>
+            <button onClick={() => setOpenForm(!openForm)}>
+                {openForm ? "상품 추가 닫기" : "상품 추가"}
             </button>
 
-            {form && <AddProduct add={add} />}
-            {products.length === 0 ? (
+            {openForm && <AddProduct add={addItem} />}
+
+            {items.length === 0 ? (
                 <p>상품이 없습니다.</p>
             ) : (
-                <table className="product-table" style={{border: '1px solid black', borderCollapse: 'collapse', width: '100%'}}>
-                    <thead style={{border:'1px solid'}}>
+                <table border="1" style={{ width: '100%', marginTop: '20px' }}>
+                    <thead>
                         <tr>
-                            <th>상품번호</th>
-                            <th>상품이름</th>
-                            <th>상품재고</th>
-                            <th>상품가격</th>
-                            <th>등록날짜</th>
-                            <th>수정날짜</th>
+                            <th>선택</th>
+                            <th>주문 개수</th>
+                            <th>상품 번호</th>
+                            <th>상품 이름</th>
+                            <th>상품 재고</th>
+                            <th>상품 가격</th>
+                            <th>등록 날짜</th>
+                            <th>수정 날짜</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {products.map((product) => (
-                            <tr key={product.p_id} onClick={() => handleRowClick(product)} style={{ cursor: 'pointer' }}>
-                                <td>{product.p_id}</td>
-                                <td>{product.p_name}</td>
-                                <td>{product.p_count}</td>
-                                <td>{product.p_price}</td>
-                                <td>{new Date(product.p_create_date).toLocaleDateString()}</td>
-                                <td>{new Date(product.p_update_date).toLocaleDateString()}</td>
+                        {items.map((item, index) => (
+                            <tr
+                                key={item.productId}
+                                onClick={() => handleRowClick(item, index)}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <td>
+                                    <input
+                                        type="radio"
+                                        name="productId"
+                                        checked={selectedIndex === index}
+                                        onChange={() => handleRadioChange(index)}
+                                        onClick={(e) => e.stopPropagation()}
+                                    />
+                                </td>
+                                <td>
+                                    <input
+                                        type="number"
+                                        value={selectedIndex === index ? orderCount : ''}
+                                        onChange={handleOrderCountChange}
+                                        readOnly={selectedIndex !== index}
+                                        onClick={(e) => e.stopPropagation()}
+                                    />
+                                </td>
+                                <td>{item.productId}</td>
+                                <td>{item.productName}</td>
+                                <td>{item.productStock}</td>
+                                <td>{item.productPrice}</td>
+                                <td>{item.registerDate}</td>
+                                <td>{item.updateDate}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             )}
 
+            <div style={{ marginTop: '10px' }}>
+                <button onClick={orderProduct}>주문 완료</button>
+                <button onClick={showOrderDetails}>주문 내역</button>
+            </div>
+
             {selected && (
                 <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
-                    <h3>상품 수정 (상품번호: {selected.p_id})</h3>
+                    <h3>상품 수정 (상품번호: {selected.productId})</h3>
                     <input
                         type="text"
                         name="p_name"
@@ -130,6 +183,10 @@ export function P_info() {
                     <button onClick={() => setSelected(null)}>취소</button>
                 </div>
             )}
+
+            {showOrderInfo && <OrderInfo />}
         </div>
     );
-};
+}
+
+export default P_info;
