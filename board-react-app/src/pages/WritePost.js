@@ -1,41 +1,44 @@
-import { useContext, useState } from "react";
-import CustomButton from "../component/CustomButton";
-import CustomInput from "../component/CustomInput";
-import { useNavigate } from "react-router-dom";
-import { BoardContext } from "../context/BoardContext";
+import { useState, useContext } from 'react'
+import { BoardContext } from '../context/BoardContext'
+import CustomButton from '../component/CustomButton'
+import CustomInput from '../component/CustomInput'
+import { useNavigate } from 'react-router-dom'
+import '../css/WritePost.css'
 
 const WritePost = () => {
-    const {boardList, setBoardList} = useContext(BoardContext);
+    const { addPost } = useContext(BoardContext);
+    const navigate = useNavigate();
 
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
     const [content, setContent] = useState("");
 
-    const navigate = useNavigate();
+    const savePost = async () => {
+        if (!title || !author || !content) {
+            alert("모든 항목을 입력해주세요.");
+            return;
+        }
 
-    const savePost = (e) => {
-        e.preventDefault();
-        const newPost = {
-            id: boardList.length+1,
-            title,
-            author,
-            writingTime:new Date().toISOString(),
-            content,
-        };
+        const newPost = { title, author, content };
 
-        setBoardList([...boardList,newPost]);
-        alert("글이 저장되었습니다!"); 
-        navigate("/");
+        try {
+            await addPost(newPost); // BoardContext 내 API 호출 함수
+            alert("게시물이 등록되었습니다.");
+            navigate("/");
+        } catch (err) {
+            console.error("저장 실패:", err);
+            alert("저장 실패 > 서버 에러가 발생했습니다.");
+        }
     };
 
-    const backtoBoard = () => {
+    const backToBoard = () => {
+        if (!window.confirm("지금까지의 작성을 끝내겠습니까?")) return;
         navigate("/");
     }
 
     return (
-        <div>
-            <h1>글쓰기</h1>
-
+        <div className="writePage">
+            <h1>글쓰기 페이지</h1>
             <form>
                 <CustomInput
                     label="제목"
@@ -54,18 +57,16 @@ const WritePost = () => {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                 />
+                <p style={{ textAlign: "right", fontSize: "12px", color: content.length > 10000 ? 'red' : 'gray' }}>
+                    {content.length} / 200 자
+                </p>
                 <div>
                     <CustomButton label="저장" onclick={savePost} />
-                    <CustomButton label="취소" variant="outlined" color="secondary" onclick={backtoBoard} />
+                    <CustomButton label="취소" variant='outlined' color="secondary" onclick={backToBoard} />
                 </div>
-
             </form>
-
-
-
         </div>
-
-    );
-};
+    )
+}
 
 export default WritePost;

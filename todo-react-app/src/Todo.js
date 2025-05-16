@@ -28,7 +28,7 @@ let Todo = (props) => {
     const [readOnly, setReadOnly] = useState(true);
 
     //true -> false로 바꾸는 turnOffReadOnly함수 추가
-    const turnOffReadOnly = () => {
+    const turnOffReadOnly = () => { 
         setReadOnly(false);
     }
 

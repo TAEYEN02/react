@@ -9,6 +9,7 @@ const CustomInput = ({
     onChange,
     readOnly=false,
     placeholder = "",
+    maxLength  = 200,
 }) =>{
     return(
         <TextField
@@ -22,7 +23,8 @@ const CustomInput = ({
             margin="normal"
             inputProps={{
                 readOnly,
-                placeholder
+                placeholder,
+                maxLength
             }}
         />
     )
