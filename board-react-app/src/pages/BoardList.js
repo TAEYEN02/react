@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import '../css/BoardList.css';
 import { BoardContext } from "../context/BoardContext";
 import api from "../api/api";
+import { apiClient } from "../service/api-config";
+import LogoutButton from "../component/LogoutButton";
 
 export const BoardList = () => {
 
@@ -12,43 +14,23 @@ export const BoardList = () => {
     const [currentPage, setCurrentPage] = useState(1); //현재페이지
     const [postsPerPage, setPostsPerPage] = useState(3); //한 페이지 보여줄 게시물 개수
     const [totalPages, setTotalPages] = useState(1);//총 페이지수
+    const [searchType, setSearchType] = useState("id");
+    const [searchValue, setSearchValue] = useState(""); // 검색어
 
-    // --- 검색 상태 추가 ---
-    const [searchType, setSearchType] = useState("title");
-    const [keyword, setKeyword] = useState("");
 
-    const navigate = useNavigate();
-
-    const fetchBoardList = async () => {
-        try {
-            const response = await api.getBoards({ searchType, keyword });
-            setBoardList(response.data);
-            setSelectedIds([]);
-            setCurrentPage(1); // 검색 시 페이지 1로 초기화
-        } catch (error) {
-            console.error("게시글 불러오기 실패:", error);
-            alert("게시글을 불러오는 데 실패했습니다.");
-        }
+    const placeholders = {
+        id: "ID 입력",
+        title: "제목 입력",
+        author: "저자 입력",
     };
 
-    // 처음 로딩 시, 또는 검색 조건 변경 시 게시글 불러오기
-    useEffect(() => {
-        const fetchBoardList = async () => {
-            try {
-                const { data } = await api.getBoards({ searchType, keyword });
-                setBoardList(data);
-            } catch (err) {
-                console.error("게시글 불러오기 실패:", err);
-            }
-        };
-        fetchBoardList();
-    }, [searchType, keyword]);
-
+    const navigate = useNavigate();
 
     useEffect(() => {
         setTotalPages(Math.ceil(boardList.length / postsPerPage));
         setCurrentPage(1);
     }, [postsPerPage, boardList.length]);
+
     //페이지 계산
     //현재 페이지의 마지막 게시글 인덱스 +1을 구한다.
     //ex) 현재페이지 : 2, 한페이지에 보여줄 게시글: 3
@@ -110,36 +92,66 @@ export const BoardList = () => {
         setCurrentPage(1);
     };
 
-    const handleSearch = () => {
-        fetchBoardList();
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            searchButton();
+        }
+    };
+
+    const searchButton = async () => {
+        if (!searchValue) {
+            alert("검색어를 입력하세요.");
+            return;
+        }
+
+        try {
+            let response;
+
+            if (searchType === "id") {
+                response = await apiClient.get(`/api/board/id/${searchValue}`);
+                setBoardList([response.data]);
+            } else if (searchType === "title") {
+                response = await apiClient.get(`/api/board/title/${searchValue}`);
+                setBoardList(response.data);
+            } else if (searchType === "author") {
+                response = await apiClient.get(`/api/board/author/${searchValue}`);
+                setBoardList(response.data);
+            }
+
+            setCurrentPage(1);
+        } catch (error) {
+            console.error("검색 오류:", error);
+            alert("검색 결과가 없습니다.");
+            setBoardList([]); // 실패 시 비우기
+        }
     };
 
     return (
         <div className="board-container">
+             <LogoutButton />
             <h1 className="board-title">게시판</h1>
 
-            <div style={{ marginBottom: "20px" }}>
+            <div className="board-button" style={{margin:"10px"}}>
                 <select
                     value={searchType}
                     onChange={(e) => setSearchType(e.target.value)}
                     style={{ marginRight: "10px" }}
                 >
+                    <option value="id">아이디</option>
                     <option value="title">제목</option>
-                    <option value="author">작성자</option>
+                    <option value="author">저자</option>
                 </select>
+
                 <input
                     type="text"
-                    placeholder="검색어 입력"
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            handleSearch();
-                        }
-                    }}
-                    style={{ marginRight: "10px" }}
+                    placeholder={placeholders[searchType]}
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    onKeyDown={handleKeyDown}
                 />
-                <button onClick={handleSearch}>검색</button>
+                <button onClick={searchButton} style={{ marginLeft: "10px" }}>
+                    찾기
+                </button>
             </div>
 
 
@@ -166,8 +178,9 @@ export const BoardList = () => {
                             />
                             <strong style={{ fontSize: '12px' }}> 전체 선택</strong>
                         </li>
-                        {currentPosts.map((board) => (
+                        {currentPosts.map((board,index) => (
                             <li key={board.id} className="board-post-item">
+                                <span className="index-number">{(currentPage - 1) * postsPerPage + index + 1}</span>
                                 <input
                                     type="checkbox"
                                     checked={selectedIds.includes(board.id)}
