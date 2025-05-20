@@ -9,8 +9,16 @@ function MultipleButtons(){
         switch(buttonId){
             case 'address':
                 navigate("/address");
+                break;
             case 'member':
                 navigate("/member");
+                break;
+            case 'movie':
+                navigate("/movie");
+                break;
+            case 'map':
+                navigate("/map");
+                break;
         }
     }
 
@@ -21,6 +29,12 @@ function MultipleButtons(){
             </button>
             <button id="member" onClick={handleButtonClick}>
                 회원가입
+            </button>
+            <button id="movie" onClick={handleButtonClick}>
+                영화 api
+            </button>
+            <button id="map" onClick={handleButtonClick}>
+                지도 api
             </button>
         </div>
     )

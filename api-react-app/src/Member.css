@@ -1,0 +1,59 @@
+.member-container {
+    
+    padding: 20px;
+    border-radius: 10px;
+    font-family: sans-serif;
+}
+
+.member-form {
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    margin: 40px auto;
+    gap: 15px;
+}
+
+.member-form input,
+.address-group button {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.address-group {
+    display: flex;
+    gap: 8px;
+}
+
+.address-group input {
+    flex: 1;
+}
+
+.member-form button[type="submit"] {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+
+}
+
+.member-form button[type="submit"]:hover {
+    background: #1e40af;
+}
+
+.member-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.member-table th,
+.member-table td {
+    border: 1px solid #e5e5e5;
+    padding: 8px;
+    text-align: left;
+}
