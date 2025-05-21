@@ -5,7 +5,8 @@ import MultipleButtons from './MultiButtons';
 import Address from './Address';
 import Member  from './Member';
 import Movie from './Movie';
-import MapContainer from './Map';
+import {MapContainer,KakaoMap} from './Map';
+import MapSearch from './MapSearch';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path='/member' element={<Member/>}/>
           <Route path='/movie' element={<Movie/>}/>
           <Route path='/map' element={<MapContainer/>}/>
+          <Route path='/search' element={<MapSearch/>}/>
         </Routes>
       </BrowserRouter>
     </div>
